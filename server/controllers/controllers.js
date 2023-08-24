@@ -1,7 +1,10 @@
-const { AppBlog, User } = require("../models/models.js");
+// const { AppBlog, User } = require("../models/models.js");
+const User = require("../models/models.js");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 exports.login = (req, res) => {
-  const {email,password} =req.body;
+  const {email, password} =req.body;
   User.findone({email:email},(err,user)=>{
       if(user){
          if(password === user.password){
@@ -10,31 +13,59 @@ exports.login = (req, res) => {
              res.send({message:"wrong credentials"})
          }
       }else{
-          res.send("not register")
+          res.send("not registered user")
       }
   })
 }
 
-exports.register = (req, res) => {
+exports.register = async (req, res) => {
   console.log(req.body);
-  const {name,email,password} =req.body;
-  User.findOne({email:email},(err,user)=>{
-    if(user){
-        res.send({message:"user already exist"})
-    }else {
-        const user = new User({name,email,password})
-        user.save(err=>{
-            if(err){
-                res.send(err)
-            }else{
-                res.send({message:"sucessfull"})
-            }
-        })
+  const user = req.body;
+  const takenEmail = await User.findOne({ email: user.email });
+
+  if (takenEmail) {
+    res.json({ message: "User email has already been taken" });
+  } else {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+    const dbUser = new User({
+      name: user.name.toLowerCase(),
+      email: user.email.toLowerCase(),
+      password: hashedPassword,
+    });
+
+    try {
+      await dbUser.save();
+      res.json({ message: "Registration successful" });
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ message: "Registration failed" });
     }
-  })
-}
+  }
+};
+
+
+// exports.register = (req, res) => {
+//   console.log(req.body);
+//   const {name, email, password} = req.body;
+//   User.findOne({email:email},(err,user)=>{
+//     if(user){
+//         res.send({message:"user already exist"})
+//     }else {
+//         const user = new User({name, email, password})
+//         user.save(err=>{
+//             if(err){
+//                 res.send(err)
+//             }else{
+//                 res.send({message:"sucessfull"})
+//             }
+//         })
+//     }
+//   })
+// }
 
 exports.createOneBlog = (req, res) => {
+  // console.log(req.body);
   AppBlog.create(req.body)
     .then((blog) => {
       console.log({ blog });
@@ -58,9 +89,10 @@ exports.listAllBlog = (req, res) => {
       res.json(blog);
     })
     .catch((err) => {
-      res
-        .status(404)
-        .json({ message: "There isnt any blog available", error: err.message });
+      res.status(404).json({ 
+        message: "There isnt any blog available", 
+        error: err.message,
+      });
     });
 };
 

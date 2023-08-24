@@ -16,12 +16,4 @@ const BlogListSchema = new mongoose.Schema({
 
 const AppBlog = mongoose.model("blog", BlogListSchema);
 
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  password: String
-});
-
-const User = mongoose.model("User", userSchema)
-
-module.exports = { AppBlog, User };
+module.exports = AppBlog;
