@@ -5,8 +5,17 @@ const dbURL = process.env.MONGO_DB_URL;
 
 const configDatabase = async () => {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/blogs', { useNewUrlParser: true });
-    console.log("MongoDB Database connected");
+    const authDBConnection = await mongoose.createConnection("mongodb://127.0.0.1:27017/auth",{
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    console.log("MongoDB auth Database connected");
+
+    const blogsDBConnection = await mongoose.createConnection('mongodb://127.0.0.1:27017/blogs', {
+      useNewUrlParser: true 
+    });
+    console.log("MongoDB blog Database connected");
+    
   } catch (err) {
     console.log(err);
     process.exit(1);
