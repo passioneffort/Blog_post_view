@@ -4,7 +4,7 @@ const router = express.Router();
 
 const {
   Signup,
-  // Login,
+  Login,
   listAllBlog,
   createOneBlog,
   updateOneBlog,
@@ -12,7 +12,7 @@ const {
 } = require("../controllers/controllers.js");
 
 router.post("/signup", Signup);
-// router.post("/login", Login);
+router.post("/login", Login);
 router.get("/list/", listAllBlog);
 router.post("/create", createOneBlog);
 router.put("/update/:id", updateOneBlog);
