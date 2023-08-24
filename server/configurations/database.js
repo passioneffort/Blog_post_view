@@ -5,7 +5,7 @@ const dbURL = process.env.MONGO_DB_URL;
 
 const configDatabase = async () => {
   try {
-    const authDBConnection = await mongoose.createConnection("mongodb://127.0.0.1:27017/database",{
+    await mongoose.connect('mongodb://127.0.0.1:27017/database', { 
       useNewUrlParser: true,
       useUnifiedTopology: true
     });

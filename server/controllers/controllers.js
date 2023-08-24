@@ -1,71 +1,37 @@
-// const { AppBlog, User } = require("../models/models.js");
-const User = require("../models/models.js");
+const AppBlog = require("../models/BlogModel.js");
+const User = require("../models/UserModel.js");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
+const { createSecretToken } = require("../util/SecretToken");
+const bcrypt = require("bcryptjs");
 
-exports.login = (req, res) => {
-  const {email, password} =req.body;
-  User.findone({email:email},(err,user)=>{
-      if(user){
-         if(password === user.password){
-             res.send({message:"login sucess",user:user})
-         }else{
-             res.send({message:"wrong credentials"})
-         }
-      }else{
-          res.send("not registered user")
-      }
-  })
-}
 
-exports.register = async (req, res) => {
+module.exports.Signup = async (req, res, next) => {
   console.log(req.body);
-  const user = req.body;
-  const takenEmail = await User.findOne({ email: user.email });
-
-  if (takenEmail) {
-    res.json({ message: "User email has already been taken" });
-  } else {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-    const dbUser = new User({
-      name: user.name.toLowerCase(),
-      email: user.email.toLowerCase(),
-      password: hashedPassword,
-    });
-
-    try {
-      await dbUser.save();
-      res.json({ message: "Registration successful" });
-    } catch (error) {
-      console.error("Error:", error);
-      res.status(500).json({ message: "Registration failed" });
+  try {
+    const { email, password, username, createdAt } = req.body;
+    const existingUser = await User.findOne({ email });
+    
+    if (existingUser) {
+      return res.json({ message: "User already exists" });
     }
+    const user = await User.create({ email, password, username, createdAt });
+    const token = createSecretToken(user._id);
+    res.cookie("token", token, {
+      withCredentials: true,
+      httpOnly: false,
+    });
+    res
+      .status(201)
+      .json({ message: "User signed in successfully", success: true, user });
+    next();
+  } catch (error) {
+    console.error(error);
   }
 };
 
-
-// exports.register = (req, res) => {
-//   console.log(req.body);
-//   const {name, email, password} = req.body;
-//   User.findOne({email:email},(err,user)=>{
-//     if(user){
-//         res.send({message:"user already exist"})
-//     }else {
-//         const user = new User({name, email, password})
-//         user.save(err=>{
-//             if(err){
-//                 res.send(err)
-//             }else{
-//                 res.send({message:"sucessfull"})
-//             }
-//         })
-//     }
-//   })
-// }
-
 exports.createOneBlog = (req, res) => {
-  // console.log(req.body);
+  console.log(req.body);
   AppBlog.create(req.body)
     .then((blog) => {
       console.log({ blog });
@@ -75,6 +41,7 @@ exports.createOneBlog = (req, res) => {
       });
     })
     .catch((err) => {
+      console.log('hhhhhhhhhhhhhhhhh');
       res.status(404).json({
         message: "Sorry your blog list cannot be added",
         error: err.message,
