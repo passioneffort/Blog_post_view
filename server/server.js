@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const configDatabase = require("./configurations/database.js");
-const blog = require("./routes/blog.routes.js");
+const route = require("./routes/routes.js");
 
 const dotenv = require("dotenv");
 
@@ -23,7 +23,7 @@ app.get("/", (req, res) =>
 );
 
 // using our routes
-app.use("/blogapp", blog);
+app.use("/blogapp", route);
 
 // listen
 app.listen(PORT, () =>
