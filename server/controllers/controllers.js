@@ -75,19 +75,19 @@ exports.createOneBlog = (req, res) => {
     });
 };
 
-// exports.listAllBlog = (req, res) => {
-//   AppBlog.find()
-//     .then((blog) => {
-//       console.log({ blog });
-//       res.json(blog);
-//     })
-//     .catch((err) => {
-//       res.status(404).json({ 
-//         message: "There isnt any blog available", 
-//         error: err.message,
-//       });
-//     });
-// };
+exports.listAllBlog = (req, res) => {
+  AppBlog.find()
+    .then((blog) => {
+      console.log({ blog });
+      res.json(blog);
+    })
+    .catch((err) => {
+      res.status(404).json({ 
+        message: "There isnt any blog available", 
+        error: err.message,
+      });
+    });
+};
 
 exports.updateOneBlog = (req, res) => {
   AppBlog.findByIdAndUpdate(req.params.id, req.body)
