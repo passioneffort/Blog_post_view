@@ -105,3 +105,19 @@ exports.updateOneBlog = (req, res) => {
     });
 };
 
+exports.deleteBlog = (req, res) => {
+  AppBlog.findByIdAndRemove(req.params.id, req.body)
+    .then((blog) => {
+      console.log({ blog });
+      res.json({
+        message: "Cheers!! You have successfully deleted your Blog",
+        blog,
+      });
+    })
+    .catch((err) => {
+      res.status(404).json({
+        message: "Sorry your blog is not there",
+        error: err.message,
+      });
+    });
+};
