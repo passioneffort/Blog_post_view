@@ -17,17 +17,17 @@ app.use(
     extended: false
   })
 );
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 
-app.use(cors({ origin: true, credentials: true }));
-app.use(express.json({ extended: false }));
+// app.use(cors({ origin: true, credentials: true }));
+// app.use(express.json({ extended: false }));
 
-app.get("/", (req, res) =>
-  res.send("Hello there!! Cheers !! The server is up and running")
-);
+// app.get("/", (req, res) =>
+//   res.send("Hello there!! Cheers !! The server is up and running")
+// );
 
-// using our routes
-app.use("/", route);
+// // using our routes
+// app.use("/", route);
 
 // listen
 app.listen(PORT, () =>
