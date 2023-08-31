@@ -5,10 +5,10 @@ const router = express.Router();
 const {
   Signup,
   Login,
-  listAllBlog,
-  createOneBlog,
-  updateOneBlog,
-  deleteBlog,
+  // listAllBlog,
+  // createOneBlog,
+  // updateOneBlog,
+  // deleteBlog,
 } = require("../controllers/controllers.js");
 
 router.post("/signup", Signup);
