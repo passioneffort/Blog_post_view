@@ -59,7 +59,7 @@ module.exports.Login = async (req, res, next) => {
 }
 
 exports.createOneBlog = (req, res) => {
-  // console.log(req.body);
+  console.log(req.body);
   AppBlog.create(req.body)
     .then((blog) => {
       console.log({ blog });
